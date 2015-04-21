@@ -6,7 +6,7 @@
 
 QT       += core gui opengl
 
-TARGET = opencv-example3
+TARGET = opencv-toolbox
 CONFIG   += console
 CONFIG   -= app_bundle
 
