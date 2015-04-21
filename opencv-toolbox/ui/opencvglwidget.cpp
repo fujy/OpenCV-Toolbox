@@ -206,13 +206,13 @@ void OpenCVGLWidget::timerEvent(QTimerEvent *)
         //        killTimer(this);
     }
 
-    this->showImage(mCurrentImage);
 
     cv::Mat currentImage = this->MCurrentImage();
     foreach ( ACommand* command, commandList) {
         command->execute(currentImage);
     }
 
+    this->showImage(mCurrentImage);
 }
 
 void OpenCVGLWidget::addCommand(ACommand* command)
