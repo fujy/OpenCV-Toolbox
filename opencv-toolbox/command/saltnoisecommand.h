@@ -8,7 +8,7 @@ class SaltNoiseCommand : public ACommand
 public:
     SaltNoiseCommand();
     ~SaltNoiseCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // SALTNOISECOMMAND_H

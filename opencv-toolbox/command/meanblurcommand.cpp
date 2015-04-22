@@ -12,9 +12,9 @@ MeanBlurCommand::~MeanBlurCommand()
 {
 }
 
-int MeanBlurCommand::execute(cv::Mat image)
+cv::Mat MeanBlurCommand::execute(cv::Mat image)
 {
     cv::blur(image,image,cv::Size(5,5));
-    return 1;
+    return image;
 }
 

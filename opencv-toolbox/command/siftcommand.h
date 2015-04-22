@@ -8,7 +8,7 @@ class SIFTCommand : public ACommand
 public:
     SIFTCommand();
     ~SIFTCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // SIFTCOMMAND_H

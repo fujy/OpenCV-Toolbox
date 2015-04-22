@@ -12,10 +12,10 @@ MorphCloseCommand::~MorphCloseCommand()
 {
 }
 
-int MorphCloseCommand::execute(cv::Mat image)
+cv::Mat MorphCloseCommand::execute(cv::Mat image)
 {
     cv::Mat elements(5,5,image.depth(),cv::Scalar(1000));
     cv::morphologyEx(image,image,cv::MORPH_CLOSE,elements);
-    return 1;
+    return image;
 }
 

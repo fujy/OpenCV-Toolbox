@@ -17,7 +17,7 @@ SIFTCommand::~SIFTCommand()
 {
 }
 
-int SIFTCommand::execute(cv::Mat image)
+cv::Mat SIFTCommand::execute(cv::Mat image)
 {
     bool ok;
     int threshold = QInputDialog::getInt(0, QObject::tr("SIFT Min Hessian"),
@@ -33,6 +33,6 @@ int SIFTCommand::execute(cv::Mat image)
 
         cv::drawKeypoints(image,keypoints,image);
     }
-    return 1;
+    return image;
 }
 

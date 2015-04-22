@@ -8,7 +8,7 @@ class SURFCommand : public ACommand
 public:
     SURFCommand();
     ~SURFCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // SURFCOMMAND_H

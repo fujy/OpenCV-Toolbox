@@ -8,7 +8,7 @@ class GaussianBlurCommand : public ACommand
 public:
     GaussianBlurCommand();
     ~GaussianBlurCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // GAUSSIANBLURCOMMAND_H

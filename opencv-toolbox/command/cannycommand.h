@@ -8,7 +8,7 @@ class CannyCommand : public ACommand
 public:
     CannyCommand();
     ~CannyCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // CannyCOMMAND_H

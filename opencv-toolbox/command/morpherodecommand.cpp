@@ -12,9 +12,9 @@ MorphErodeCommand::~MorphErodeCommand()
 {
 }
 
-int MorphErodeCommand::execute(cv::Mat image)
+cv::Mat MorphErodeCommand::execute(cv::Mat image)
 {
     cv::erode(image,image,cv::Mat());
-    return 1;
+    return image;
 }
 

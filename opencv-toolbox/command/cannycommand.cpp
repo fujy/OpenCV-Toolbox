@@ -12,12 +12,12 @@ CannyCommand::~CannyCommand()
 {
 }
 
-int CannyCommand::execute(cv::Mat image)
+cv::Mat CannyCommand::execute(cv::Mat image)
 {
     int lowThreshold = 125;
     int highThreshold = 350;
     cv::cvtColor(image,image,CV_BGR2GRAY);
     cv::Canny(image,image,lowThreshold,highThreshold);
-    return 1;
+    return image;
 }
 

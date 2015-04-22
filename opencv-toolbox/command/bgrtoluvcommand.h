@@ -8,7 +8,7 @@ class BGRToLUVCommand : public ACommand
 public:
   BGRToLUVCommand();
   ~BGRToLUVCommand();
-  int execute(cv::Mat image);
+  cv::Mat execute(cv::Mat image);
 };
 
 #endif // BGRTOLUVCOMMAND_H

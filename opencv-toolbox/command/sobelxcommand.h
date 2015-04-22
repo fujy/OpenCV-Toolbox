@@ -8,7 +8,7 @@ class SobelXCommand : public ACommand
 public:
     SobelXCommand();
     ~SobelXCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // SOBELXCOMMAND_H

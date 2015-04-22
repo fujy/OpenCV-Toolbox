@@ -12,9 +12,9 @@ MedianBlurCommand::~MedianBlurCommand()
 {
 }
 
-int MedianBlurCommand::execute(cv::Mat image)
+cv::Mat MedianBlurCommand::execute(cv::Mat image)
 {
     cv::medianBlur(image,image,5);
-    return 1;
+    return image;
 }
 

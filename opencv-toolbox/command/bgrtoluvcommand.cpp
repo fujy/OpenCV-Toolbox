@@ -12,9 +12,9 @@ BGRToLUVCommand::~BGRToLUVCommand()
 {
 }
 
-int BGRToLUVCommand::execute(cv::Mat image)
+cv::Mat BGRToLUVCommand::execute(cv::Mat image)
 {
     cv::cvtColor(image, image, cv::COLOR_BGR2Luv);
-    return 1;
+    return image;
 }
 

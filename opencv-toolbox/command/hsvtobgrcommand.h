@@ -8,7 +8,7 @@ class HSVToBGRCommand : public ACommand
 public:
     HSVToBGRCommand();
     ~HSVToBGRCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // HSVTOBGRCOMMAND_H

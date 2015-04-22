@@ -8,7 +8,7 @@ class LaplacianCommand : public ACommand
 public:
     LaplacianCommand();
     ~LaplacianCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // LAPLACIANCOMMAND_H

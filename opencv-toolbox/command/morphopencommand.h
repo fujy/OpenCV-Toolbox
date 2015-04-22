@@ -8,7 +8,7 @@ class MorphOpenCommand : public ACommand
 public:
     MorphOpenCommand();
     ~MorphOpenCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // MORPHOPENCOMMAND_H

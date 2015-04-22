@@ -12,7 +12,7 @@ Sharpen2DCommand::~Sharpen2DCommand()
 {
 }
 
-int Sharpen2DCommand::execute(cv::Mat image)
+cv::Mat Sharpen2DCommand::execute(cv::Mat image)
 {
     cv::Mat kernel(3,3,CV_32F,cv::Scalar(0));
     kernel.at<float>(1,1)= 5.0;
@@ -21,6 +21,6 @@ int Sharpen2DCommand::execute(cv::Mat image)
     kernel.at<float>(1,0)= -1.0;
     kernel.at<float>(1,2)= -1.0;
     cv::filter2D(image,image,image.depth(),kernel);
-    return 1;
+    return image;
 }
 

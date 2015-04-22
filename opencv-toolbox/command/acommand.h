@@ -13,7 +13,7 @@ class ACommand
 public:
     ACommand();
     virtual ~ACommand();
-    virtual int execute(cv::Mat image) = 0;
+    virtual cv::Mat execute(cv::Mat image) = 0;
 };
 
 #endif // ACOMMAND_H

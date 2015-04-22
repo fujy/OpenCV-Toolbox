@@ -12,9 +12,9 @@ BGRToHSVCommand::~BGRToHSVCommand()
 {
 }
 
-int BGRToHSVCommand::execute(cv::Mat image)
+cv::Mat BGRToHSVCommand::execute(cv::Mat image)
 {
     cv::cvtColor(image, image, cv::COLOR_BGR2HSV);
-    return 1;
+    return image;
 }
 

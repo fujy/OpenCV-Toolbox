@@ -8,7 +8,7 @@ class BGRToHSVCommand : public ACommand
 public:
     BGRToHSVCommand();
     ~BGRToHSVCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // BGRTOHSVCOMMAND_H

@@ -8,7 +8,7 @@ class MedianBlurCommand : public ACommand
 public:
     MedianBlurCommand();
     ~MedianBlurCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // MEDIANBLURCOMMAND_H

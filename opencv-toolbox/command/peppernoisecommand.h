@@ -8,7 +8,7 @@ class PepperNoiseCommand : public ACommand
 public:
     PepperNoiseCommand();
     ~PepperNoiseCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // PEPPERNOISECOMMAND_H

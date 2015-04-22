@@ -12,9 +12,9 @@ BGRToGrayCommand::~BGRToGrayCommand()
 {
 }
 
-int BGRToGrayCommand::execute(cv::Mat image)
+cv::Mat BGRToGrayCommand::execute(cv::Mat image)
 {
     cv::cvtColor(image, image, cv::COLOR_BGR2GRAY);
-    return 1;
+    return image;
 }
 

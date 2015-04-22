@@ -18,7 +18,7 @@ FASTCommand::~FASTCommand()
 {
 }
 
-int FASTCommand::execute(cv::Mat image)
+cv::Mat FASTCommand::execute(cv::Mat image)
 {
     bool ok;
     int threshold = QInputDialog::getInt(0,QObject::tr("FAST Threshold"),
@@ -35,6 +35,6 @@ int FASTCommand::execute(cv::Mat image)
 
         cv::drawKeypoints(image,keypoints,image);
     }
-    return 1;
+    return image;
 }
 

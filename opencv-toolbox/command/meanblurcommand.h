@@ -8,7 +8,7 @@ class MeanBlurCommand : public ACommand
 public:
     MeanBlurCommand();
     ~MeanBlurCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // MEANBLURCOMMAND_H

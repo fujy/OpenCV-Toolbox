@@ -11,7 +11,7 @@ PepperNoiseCommand::~PepperNoiseCommand()
 {
 }
 
-int PepperNoiseCommand::execute(cv::Mat image)
+cv::Mat PepperNoiseCommand::execute(cv::Mat image)
 {
     int pepperNoise = 1000;
 
@@ -27,6 +27,6 @@ int PepperNoiseCommand::execute(cv::Mat image)
         }
     }
 
-    return 1;
+    return image;
 }
 

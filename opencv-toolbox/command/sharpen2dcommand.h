@@ -8,7 +8,7 @@ class Sharpen2DCommand : public ACommand
 public:
     Sharpen2DCommand();
     ~Sharpen2DCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // SHARPEN2DCOMMAND_H

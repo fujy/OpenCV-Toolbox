@@ -8,7 +8,7 @@ class MorphDilateCommand : public ACommand
 public:
     MorphDilateCommand();
     ~MorphDilateCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // MORPHDILATECOMMAND_H

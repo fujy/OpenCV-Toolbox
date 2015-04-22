@@ -8,7 +8,7 @@ class MorphCloseCommand : public ACommand
 public:
     MorphCloseCommand();
     ~MorphCloseCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // MORPHCLOSECOMMAND_H

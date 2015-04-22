@@ -11,9 +11,9 @@ FlipCommand::~FlipCommand()
 {
 }
 
-int FlipCommand::execute(cv::Mat image)
+cv::Mat FlipCommand::execute(cv::Mat image)
 {
     cv::flip(image,image,1);
-    return 1;
+    return image;
 }
 

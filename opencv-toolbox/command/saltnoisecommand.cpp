@@ -11,7 +11,7 @@ SaltNoiseCommand::~SaltNoiseCommand()
 {
 }
 
-int SaltNoiseCommand::execute(cv::Mat image)
+cv::Mat SaltNoiseCommand::execute(cv::Mat image)
 {
     int saltNoise = 1000;
 
@@ -27,6 +27,6 @@ int SaltNoiseCommand::execute(cv::Mat image)
         }
     }
 
-    return 1;
+    return image;
 }
 

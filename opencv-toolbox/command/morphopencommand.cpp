@@ -12,10 +12,10 @@ MorphOpenCommand::~MorphOpenCommand()
 {
 }
 
-int MorphOpenCommand::execute(cv::Mat image)
+cv::Mat MorphOpenCommand::execute(cv::Mat image)
 {
     cv::Mat elements(5,5,image.depth(),cv::Scalar(1000));
     cv::morphologyEx(image,image,cv::MORPH_OPEN, elements);
-    return 1;
+    return image;
 }
 

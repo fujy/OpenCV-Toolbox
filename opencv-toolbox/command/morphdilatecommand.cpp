@@ -12,9 +12,9 @@ MorphDilateCommand::~MorphDilateCommand()
 {
 }
 
-int MorphDilateCommand::execute(cv::Mat image)
+cv::Mat MorphDilateCommand::execute(cv::Mat image)
 {
     cv::dilate(image,image,cv::Mat());
-    return 1;
+    return image;
 }
 

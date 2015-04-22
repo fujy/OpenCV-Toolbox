@@ -8,7 +8,7 @@ class MorphErodeCommand : public ACommand
 public:
     MorphErodeCommand();
     ~MorphErodeCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // MORPHERODECOMMAND_H

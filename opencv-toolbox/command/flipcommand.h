@@ -8,7 +8,7 @@ class FlipCommand : public ACommand
 public:
     FlipCommand();
     ~FlipCommand();
-    int execute(cv::Mat image);
+    cv::Mat execute(cv::Mat image);
 };
 
 #endif // FLIPCOMMAND_H

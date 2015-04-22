@@ -12,10 +12,10 @@ SobelXCommand::~SobelXCommand()
 {
 }
 
-int SobelXCommand::execute(cv::Mat image)
+cv::Mat SobelXCommand::execute(cv::Mat image)
 {
     cv::cvtColor(image,image,CV_BGR2GRAY);
     cv::Sobel(image,image,image.depth(),1,0,3,0.4,128);
-    return 1;
+    return image;
 }
 
