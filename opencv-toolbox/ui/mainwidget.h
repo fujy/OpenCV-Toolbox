@@ -5,7 +5,10 @@
 
 #include <QWidget>
 #include <QTimer>
+
 class QGridLayout;
+class QHBoxLayout;
+class QListView;
 class QMdiArea;
 class QSignalMapper;
 
@@ -30,7 +33,9 @@ public slots:
 
 private:
     QGridLayout* gridLayout;
+    QHBoxLayout* hboxLayout;
     QList<OpenCVGLWidget*>* openCVGLWidgetList;
+    QListView* listView;
     OpenCVGLWidget* activeImageMdi;
 
     QMdiArea *mdiArea;

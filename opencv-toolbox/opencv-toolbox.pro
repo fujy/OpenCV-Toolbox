@@ -59,7 +59,8 @@ SOURCES += main.cpp \
     command/sobelycommand.cpp \
     command/surfcommand.cpp \
     command/peppernoisecommand.cpp \
-    command/hsvtobgrcommand.cpp
+    command/hsvtobgrcommand.cpp \
+    model/commandlistmodel.cpp
 
 HEADERS += \
     ui/mainwindow.h \
@@ -90,4 +91,5 @@ HEADERS += \
     command/sobelycommand.h \
     command/surfcommand.h \
     command/peppernoisecommand.h \
-    command/hsvtobgrcommand.h
+    command/hsvtobgrcommand.h \
+    model/commandlistmodel.h

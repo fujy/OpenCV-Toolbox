@@ -10,6 +10,13 @@ class QAction;
 class QContextMenuEvent;
 class QMenu;
 class QVBoxLayout;
+class QGridLayout;
+class QHBoxLayout;
+class QListView;
+class QMdiArea;
+class QMdiSubWindow;
+class QSignalMapper;
+class QWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -19,7 +26,24 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
 private:
+    QWidget* qWidget;
+    QGridLayout* gridLayout;
+    QHBoxLayout* hboxLayout;
+    QList<OpenCVGLWidget*>* openCVGLWidgetList;
+    QListView* listView;
+    OpenCVGLWidget* activeImageMdi;
+
+    OpenCVGLWidget* ActiveMdiChild();
+    OpenCVGLWidget* createMdiChild();
+
+    void newFromCurrentImageMdi();
+    void createNewImageMdi();
+    void createNewCameraMdi();
+    QMdiArea *mdiArea;
+    QSignalMapper *windowMapper;
+
     static const int width = 1024;
     static const int height = 600;
 
@@ -85,6 +109,8 @@ private:
     void createMenus();
 
 private slots:
+    void updateListView(QMdiSubWindow*);
+
     void newImage();
     void openImage();
     void openCamera();

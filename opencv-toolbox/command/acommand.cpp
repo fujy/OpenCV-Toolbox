@@ -10,3 +10,8 @@ ACommand::~ACommand()
 
 }
 
+QString ACommand::CommandName()
+{
+    return commandName;
+}
+

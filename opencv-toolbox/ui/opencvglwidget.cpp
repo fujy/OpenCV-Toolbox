@@ -1,5 +1,6 @@
 #include "opencvglwidget.h"
 #include "command/acommand.h"
+#include "model/commandlistmodel.h"
 
 #include <QGLWidget>
 
@@ -12,6 +13,8 @@
 
 OpenCVGLWidget::OpenCVGLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
+    commandListModel = new CommandListModel;
+
     mSceneChanged = false;
     mBgColor = QColor::fromRgb(150, 150, 150);
 
@@ -25,11 +28,18 @@ OpenCVGLWidget::OpenCVGLWidget(QWidget *parent) : QOpenGLWidget(parent)
 
 OpenCVGLWidget::~OpenCVGLWidget()
 {
+    delete commandListModel;
+
     if(!timerId)
         killTimer(timerId);
 
     if(capture.isOpened())
         capture.release();
+}
+
+CommandListModel* OpenCVGLWidget::getCommandListModel()
+{
+    return commandListModel;
 }
 
 void OpenCVGLWidget::initializeGL()
@@ -85,14 +95,11 @@ void OpenCVGLWidget::updateScene()
 void OpenCVGLWidget::paintGL()
 {
     makeCurrent();
-
     if( !mSceneChanged )
         return;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     renderImage();
-
     mSceneChanged = false;
 }
 
@@ -104,42 +111,32 @@ void OpenCVGLWidget::renderImage()
     if (!mRenderQtImg.isNull())
     {
         glLoadIdentity();
-
         QImage image; // the image rendered
-
         glPushMatrix();
         {
             int imW = mRenderQtImg.width();
             int imH = mRenderQtImg.height();
-
             // The image is to be resized to fit the widget?
             if( imW != this->size().width() &&
                     imH != this->size().height() )
             {
-
                 image = mRenderQtImg.scaled( //this->size(),
                                              QSize(mOutW,mOutH),
                                              Qt::IgnoreAspectRatio,
                                              Qt::SmoothTransformation
                                              );
-
                 //qDebug( QString( "Image size: (%1x%2)").arg(imW).arg(imH).toAscii() );
             }
             else
                 image = mRenderQtImg;
-
             // --->Centering image in draw area
-
             glRasterPos2i( mPosX, mPosY );
             // < --- Centering image in draw area
-
             imW = image.width();
             imH = image.height();
-
             glDrawPixels( imW, imH, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
         }
         glPopMatrix();
-
         // end
         glFlush();
     }
@@ -203,22 +200,29 @@ void OpenCVGLWidget::timerEvent(QTimerEvent *)
     if (!bSuccess)
     {
         qDebug() << "Cannot read the frame from video file";
-        //        killTimer(this);
     }
 
 
     cv::Mat currentImage = this->MCurrentImage();
-    foreach ( ACommand* command, commandList) {
-        command->execute(currentImage);
+    foreach ( ACommand* command, commandListModel->CommandList()) {
+        currentImage = command->execute(currentImage);
     }
 
-    this->showImage(mCurrentImage);
+    this->showImage(currentImage);
 }
 
 void OpenCVGLWidget::addCommand(ACommand* command)
 {
     cv::Mat currentImage = this->MCurrentImage();
-    command->execute(currentImage);
+    currentImage = command->execute(currentImage);
     this->showImage(currentImage);
-    this->commandList.append(command);
+
+    if(this->commandListModel == 0){
+        QList<ACommand*> commands;
+        commands.append(command);
+        commandListModel = new CommandListModel;
+    }else {
+        this->commandListModel->CommandList().append(command);
+    }
+
 }

@@ -3,8 +3,9 @@
 
 #include <QDebug>
 #include <QFileDialog>
-#include <QGridLayout>
+#include <QHBoxLayout>
 #include <QList>
+#include <QListView>
 #include <QMdiArea>
 #include <QSignalMapper>
 #include <QMdiSubWindow>
@@ -14,28 +15,21 @@
 
 MainWidget::MainWidget(QWidget *parent) : QWidget(parent)
 {
-    //    openCVGLWidgetList = new QList<OpenCVGLWidget*>();
-    //    OpenCVGLWidget* openCVGLWidget1 = new OpenCVGLWidget();
-    //    OpenCVGLWidget* openCVGLWidget2 = new OpenCVGLWidget();
-    //    openCVGLWidgetList->append(openCVGLWidget1);
-    //    openCVGLWidgetList->append(openCVGLWidget2);
-
-    //    originalImageWidget = openCVGLWidget1;
-    gridLayout = new QGridLayout(this);
-
-    //    gridLayout->addWidget(openCVGLWidget1, 1, 0);
-    //    gridLayout->addWidget(openCVGLWidget2, 1, 1);
+    hboxLayout = new QHBoxLayout(this);
 
     mdiArea = new QMdiArea;
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    listView = new QListView;
 
     //    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),this, SLOT(updateMenus()));
 
     //    windowMapper = new QSignalMapper(this);
     //    connect(windowMapper, SIGNAL(mapped(QWidget*)),this, SLOT(setActiveSubWindow(QWidget*)));
 
-    gridLayout->addWidget(mdiArea, 0,0);
+    hboxLayout->addWidget(mdiArea);
+    hboxLayout->addWidget(listView);
 }
 
 MainWidget::~MainWidget()
@@ -57,7 +51,6 @@ void MainWidget::newFromCurrentImageMdi()
         openCVGLWidget->show();
     }
 
-
 }
 
 void MainWidget::createNewImageMdi()
@@ -78,7 +71,6 @@ void MainWidget::createNewImageMdi()
     openCVGLWidget->showImage(image);
     openCVGLWidget->show();
 }
-
 
 void MainWidget::createNewCameraMdi()
 {

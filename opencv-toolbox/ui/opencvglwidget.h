@@ -1,6 +1,8 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
+#include "model/commandlistmodel.h"
+
 #include <opencv2/opencv.hpp>
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -23,6 +25,7 @@ public:
     void SetMOrigianlImage(cv::Mat image);
     void initializeVideoCapure();
     void addCommand(ACommand* command);
+    CommandListModel* getCommandListModel();
 
 protected:
     void initializeGL();
@@ -52,7 +55,8 @@ private:
     int mPosX; /// Top left X position to render image in the center of widget
     int mPosY; /// Top left Y position to render image in the center of widget
 
-    QList<ACommand*> commandList;
+//    QList<ACommand*> commandList;
+    CommandListModel* commandListModel;
 
 signals:
     void imageSizeChanged( int outW, int outH ); /// Used to resize the image outside the widget

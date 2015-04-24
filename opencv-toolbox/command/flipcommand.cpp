@@ -1,10 +1,12 @@
 #include "flipcommand.h"
 #include "opencv2/core.hpp"
 
+#include <QString>
+
 FlipCommand::FlipCommand()
     : ACommand()
 {
-
+    commandName = "Flip";
 }
 
 FlipCommand::~FlipCommand()

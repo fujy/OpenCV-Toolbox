@@ -43,7 +43,17 @@
 #include <QMenuBar>
 #include <QContextMenuEvent>
 #include <QStatusBar>
+#include <QStringList>
+#include <QStringListModel>
 #include <QVBoxLayout>
+#include <QDebug>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QListView>
+#include <QMdiArea>
+#include <QSignalMapper>
+#include <QMdiSubWindow>
+#include <QWidget>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -51,18 +61,106 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle(tr("OpenCV Toolbox"));
     resize(width, height);
 
-    mainWidget = new MainWidget();
-    setCentralWidget(mainWidget);
+    qWidget = new QWidget();
+    setCentralWidget(qWidget);
 
     createActions();
     createMenus();
 
     QString message = tr("Ready");
     statusBar()->showMessage(message);
+
+    hboxLayout = new QHBoxLayout(qWidget);
+
+    mdiArea = new QMdiArea;
+    mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    listView = new QListView;
+
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)),this, SLOT(updateListView(QMdiSubWindow*)));
+
+//    windowMapper = new QSignalMapper(this);
+//    connect(windowMapper, SIGNAL(mapped(QWidget*)),this, SLOT(setActiveSubWindow(QWidget*)));
+
+    hboxLayout->addWidget(mdiArea);
+    hboxLayout->addWidget(listView);
 }
 
 MainWindow::~MainWindow()
 {
+}
+
+void MainWindow::newFromCurrentImageMdi()
+{
+    OpenCVGLWidget* current = ActiveMdiChild();
+
+    if(current != 0)
+    {
+        cv::Mat currentImage = current->MOrigianlImage();
+        cv::Mat image = currentImage;
+        OpenCVGLWidget *openCVGLWidget = createMdiChild();
+        openCVGLWidget->SetMOrigianlImage(image);
+        openCVGLWidget->showImage(image);
+        openCVGLWidget->show();
+    }
+}
+
+void MainWindow::updateListView(QMdiSubWindow* mdiSubWindow)
+{
+    OpenCVGLWidget* current = ActiveMdiChild();
+    if(current != 0)
+        listView->setModel(current->getCommandListModel());
+}
+
+void MainWindow::createNewImageMdi()
+{
+    QString path = QFileDialog::getOpenFileName(
+                this,
+                tr("Pick a File"),
+                "/home",
+                tr("Images ( * .png * .jpg)"));
+
+    if(path.isEmpty())
+        return;
+
+    cv::Mat image = cv::imread(path.toStdString());
+
+    OpenCVGLWidget *openCVGLWidget = createMdiChild();
+    openCVGLWidget->SetMOrigianlImage(image);
+    openCVGLWidget->showImage(image);
+    openCVGLWidget->show();
+
+    QStringList li;
+    li << "abc" << "adsas";
+    QStringListModel* mo = new QStringListModel;
+    mo->setStringList(li);
+//    this->listView->setModel(mo);
+    this->listView->setModel(openCVGLWidget->getCommandListModel());
+}
+
+void MainWindow::createNewCameraMdi()
+{
+    OpenCVGLWidget *openCVGLWidget =  createMdiChild();
+    openCVGLWidget->show();
+    openCVGLWidget->initializeVideoCapure();
+}
+
+OpenCVGLWidget* MainWindow::createMdiChild()
+{
+    OpenCVGLWidget *openCVGLWidget = new OpenCVGLWidget();
+    openCVGLWidget->setMinimumHeight(300);
+    openCVGLWidget->setMinimumWidth(300);
+    mdiArea->addSubWindow(openCVGLWidget);
+
+    return openCVGLWidget;
+}
+
+OpenCVGLWidget* MainWindow::ActiveMdiChild()
+{
+    if (QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
+        return qobject_cast<OpenCVGLWidget *>(activeSubWindow->widget());
+    return 0;
 }
 
 void MainWindow::createActions()
@@ -106,7 +204,6 @@ void MainWindow::createActions()
 
     saltAct = new QAction(tr("&Add Salt And Pepper Noise"), this);
     connect(saltAct, SIGNAL(triggered()), this, SLOT(salt()));
-
 
 
     rgbToHsvAct = new QAction(tr("&RGB To HSV"), this);
@@ -233,24 +330,24 @@ void MainWindow::createMenus()
 
 void MainWindow::newImage()
 {
-    mainWidget->newFromCurrentImageMdi();
+    this->newFromCurrentImageMdi();
 }
 
 void MainWindow::openImage()
 {
-    mainWidget->createNewImageMdi();
+    this->createNewImageMdi();
 }
 
 void MainWindow::saveImage()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         QString savedImagePath = QFileDialog::getSaveFileName(
-                this,
-                tr("Save Image"),
-                QDir::currentPath(),
-                tr("Image (*.png,*.jpeg,*.jpg,*.bmp)") );
+                    this,
+                    tr("Save Image"),
+                    QDir::currentPath(),
+                    tr("Image (*.png,*.jpeg,*.jpg,*.bmp)") );
 
         if (!savedImagePath.isNull()) {
             cv::Mat currentImage = current->MCurrentImage();
@@ -261,7 +358,7 @@ void MainWindow::saveImage()
 
 void MainWindow::openCamera()
 {
-    mainWidget->createNewCameraMdi();
+    this->createNewCameraMdi();
 }
 
 
@@ -277,16 +374,18 @@ void MainWindow::redo()
 
 void MainWindow::flip()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new FlipCommand);
     }
+
+    qDebug() << listView->model()->rowCount();
 }
 
 void MainWindow::salt()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new SaltNoiseCommand);
@@ -295,7 +394,7 @@ void MainWindow::salt()
 
 void MainWindow::bgrToHsv()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new BGRToHSVCommand);
@@ -304,7 +403,7 @@ void MainWindow::bgrToHsv()
 
 void MainWindow::hsvToBgr()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new HSVToBGRCommand);
@@ -313,7 +412,7 @@ void MainWindow::hsvToBgr()
 
 void MainWindow::bgrToGray()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new BGRToGrayCommand);
@@ -322,7 +421,7 @@ void MainWindow::bgrToGray()
 
 void MainWindow::bgrToLuv()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new BGRToLUVCommand);
@@ -331,7 +430,7 @@ void MainWindow::bgrToLuv()
 
 void MainWindow::morphDilate()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new MorphDilateCommand);
@@ -340,7 +439,7 @@ void MainWindow::morphDilate()
 
 void MainWindow::morphErode()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new MorphErodeCommand);
@@ -349,7 +448,7 @@ void MainWindow::morphErode()
 
 void MainWindow::morphOpen()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new MorphOpenCommand);
@@ -358,7 +457,7 @@ void MainWindow::morphOpen()
 
 void MainWindow::morphClose()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new MorphCloseCommand);
@@ -367,7 +466,7 @@ void MainWindow::morphClose()
 
 void MainWindow::meanBlur()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new MeanBlurCommand);
@@ -376,7 +475,7 @@ void MainWindow::meanBlur()
 
 void MainWindow::medianBlur()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new MedianBlurCommand);
@@ -385,7 +484,7 @@ void MainWindow::medianBlur()
 
 void MainWindow::gaussianBlur()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new GaussianBlurCommand);
@@ -394,7 +493,7 @@ void MainWindow::gaussianBlur()
 
 void MainWindow::sobelX()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new SobelXCommand);
@@ -403,7 +502,7 @@ void MainWindow::sobelX()
 
 void MainWindow::sobelY()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new SobelYCommand);
@@ -412,7 +511,7 @@ void MainWindow::sobelY()
 
 void MainWindow::laplacian()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new LaplacianCommand);
@@ -421,7 +520,7 @@ void MainWindow::laplacian()
 
 void MainWindow::sharpen2D()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new Sharpen2DCommand);
@@ -430,7 +529,7 @@ void MainWindow::sharpen2D()
 
 void MainWindow::canny()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new CannyCommand);
@@ -439,7 +538,7 @@ void MainWindow::canny()
 
 void MainWindow::fast()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new FASTCommand);
@@ -449,7 +548,7 @@ void MainWindow::fast()
 
 void MainWindow::surf()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new SURFCommand);
@@ -458,7 +557,7 @@ void MainWindow::surf()
 
 void MainWindow::sift()
 {
-    OpenCVGLWidget* current = mainWidget->ActiveMdiChild();
+    OpenCVGLWidget* current = this->ActiveMdiChild();
     if(current != 0)
     {
         current->addCommand(new SIFTCommand);
